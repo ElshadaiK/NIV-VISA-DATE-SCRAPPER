@@ -1,4 +1,4 @@
-# NIV-VISA-DATE-SCRAPPER
+# US-NIV-VISA-DATE-SCRAPPER
 
 Please note that this script only works for the Ethiopian NIV VISA appointment setting website. 
 
