@@ -30,6 +30,20 @@ var desiredDate = new Date('2023-06-14');
 var path = window.location.pathname,
     id = path.split('/')[4];
 
+function notifyUser(message) {
+    if (!("Notification" in window)) {
+        alert("This browser does not support desktop notifications.");
+    } else if (Notification.permission === "granted") {
+        new Notification(message);
+    } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(function(permission) {
+            if (permission === "granted") {
+                new Notification(message);
+            }
+        });
+    }
+}
+
 var scrapeInterval = setInterval(function () {
     $.getJSON('https://ais.usvisa-info.com/en-et/niv/schedule/' + id + '/appointment/days/19.json?appointments[expedite]=false', function (data) {
         if (data.length === 0) {
@@ -39,6 +53,9 @@ var scrapeInterval = setInterval(function () {
             var earliestDate = new Date(data[0].date);
             if (earliestDate.getTime() <= desiredDate.getTime()) {
                 window.alert('Earliest date available: ' + earliestDate.toDateString());
+                // if you're busy using another window and would like to be notified if an appointment is found, 
+                // comment the line above and uncomment the line below
+                // notifyUser('Earliest date available: ' + earliestDate.toDateString());
             } else {
                 console.log('No date available');
             }
