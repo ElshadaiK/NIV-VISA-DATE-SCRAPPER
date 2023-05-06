@@ -13,6 +13,14 @@ To use this script, do the following:
 3. Open up Console on your browser
 4. Copy and paste this script into the console and press Enter to run the script
 
+The script will then run automatically every 10 seconds, checking for earlier appointment dates than the specified desired date. If an earlier date is found, the script will display an alert with the earliest available date.
+
+## Customization
+
+### Desired Date
+
+You can customize the desired date by modifying the following line in the script:
+
 ```javascript
 'use strict';
 
