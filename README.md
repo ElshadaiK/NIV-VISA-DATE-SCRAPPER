@@ -1,6 +1,6 @@
 # US-NIV-VISA-DATE-SCRAPPER
 
-Please note that this script only works for the Ethiopian NIV VISA appointment setting website.
+Please note that this script only works for the US Non-immigrant Visa appointment setting website in Ethiopia.
 
 If you're using it for another country, go to reschedule appointment -> inspect -> look for xhr call that looks like
 19.json?appointments[expedite]=false (the 19 is Addis Ababa's visa center code in this case). Also replace the en-et from the
