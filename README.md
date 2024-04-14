@@ -25,12 +25,17 @@ You can customize the desired date by modifying the following line in the script
 'use strict';
 
 // Enter the desired date (to find any earlier appointments from it) in yyyy-mm-dd format
-var desiredDate = new Date('2023-06-14');
+var desiredDate = new Date('2024-04-30');
+
+// Audio and Notification setup
+const audioSource = 'https://cdn.freesound.org/previews/533/533869_5828667-lq.mp3';
+const audio = new Audio(audioSource);
 
 var path = window.location.pathname,
     id = path.split('/')[4];
 
 function notifyUser(message) {
+    await audio.play();
     if (!("Notification" in window)) {
         alert("This browser does not support desktop notifications.");
     } else if (Notification.permission === "granted") {
