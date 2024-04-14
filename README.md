@@ -34,7 +34,7 @@ const audio = new Audio(audioSource);
 var path = window.location.pathname,
     id = path.split('/')[4];
 
-function notifyUser(message) {
+async function notifyUser(message) {
     await audio.play();
     if (!("Notification" in window)) {
         alert("This browser does not support desktop notifications.");
