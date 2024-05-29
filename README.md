@@ -24,46 +24,68 @@ You can customize the desired date by modifying the following line in the script
 ```javascript
 'use strict';
 
-// Enter the desired date (to find any earlier appointments from it) in yyyy-mm-dd format
-var desiredDate = new Date('2024-04-30');
+// Desired date to find any earlier appointments (yyyy-mm-dd format)
+const desiredDate = new Date('2024-04-30');
 
 // Audio and Notification setup
 const audioSource = 'https://cdn.freesound.org/previews/533/533869_5828667-lq.mp3';
 const audio = new Audio(audioSource);
 
-var path = window.location.pathname,
-    id = path.split('/')[4];
+// Extract appointment ID from URL path
+const getAppointmentId = () => {
+    const pathSegments = window.location.pathname.split('/');
+    return pathSegments[4];
+};
 
-async function notifyUser(message) {
+const appointmentId = getAppointmentId();
+
+// Notify user with audio and desktop notification
+const notifyUser = async (message) => {
     await audio.play();
     if (!("Notification" in window)) {
         alert("This browser does not support desktop notifications.");
     } else if (Notification.permission === "granted") {
         new Notification(message);
     } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(function(permission) {
-            if (permission === "granted") {
-                new Notification(message);
-            }
-        });
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+            new Notification(message);
+        }
     }
-}
+};
 
-var scrapeInterval = setInterval(function () {
-    $.getJSON('https://ais.usvisa-info.com/en-et/niv/schedule/' + id + '/appointment/days/19.json?appointments[expedite]=false', function (data) {
+// Check for available appointments and notify user if an earlier date is found
+const checkAppointments = async () => {
+    const url = `https://ais.usvisa-info.com/en-et/niv/schedule/${appointmentId}/appointment/days/19.json?appointments[expedite]=false`;
+    
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
         if (data.length === 0) {
-            console.log('Not available');
+            console.log('No appointments available');
+            return;
         }
-        if (data.length > 0) {
-            var earliestDate = new Date(data[0].date);
-            if (earliestDate.getTime() <= desiredDate.getTime()) {
-                window.alert('Earliest date available: ' + earliestDate.toDateString());
-                // if you're busy using another window and would like to be notified if an appointment is found, 
-                // comment the line above and uncomment the line below
-                // notifyUser('Earliest date available: ' + earliestDate.toDateString());
-            } else {
-                console.log('No date available');
-            }
+
+        const earliestDate = new Date(data[0].date);
+        if (earliestDate <= desiredDate) {
+            alert(`Earliest date available: ${earliestDate.toDateString()}`);
+            // To use desktop notification instead of alert, comment out the line above and uncomment the line below
+            // notifyUser(`Earliest date available: ${earliestDate.toDateString()}`);
+        } else {
+            console.log('No earlier date available');
         }
-    });
-}, 60000);
+    } catch (error) {
+        console.error('Error fetching appointment data:', error);
+    }
+};
+
+// Set interval to check appointments every minute (adjustable)
+const setScrapeInterval = (intervalInMinutes) => {
+    const intervalInMilliseconds = intervalInMinutes * 60 * 1000;
+    return setInterval(checkAppointments, intervalInMilliseconds);
+};
+
+// Example usage: Set the interval to check every 1 minute (can be adjusted)
+const scrapeInterval = setScrapeInterval(1);
+```
