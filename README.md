@@ -1,25 +1,47 @@
-# US-NIV-VISA-DATE-SCRAPPER
+# US-NIV-VISA-DATE-SCRAPER
 
-Please note that this script only works for the US Non-immigrant Visa appointment setting website in Ethiopia.
+This script checks for earlier available appointment dates on the US Non-immigrant Visa appointment setting website for Ethiopia. 
 
-If you're using it for another country, go to reschedule appointment -> inspect -> look for xhr call that looks like
-19.json?appointments[expedite]=false (the 19 is Addis Ababa's visa center code in this case). Also replace the en-et from the
-url <https://ais.usvisa-info.com/en-et/niv/schedule/> below by your country's code. (the et part is for Ethiopia)
+**Note:** If you are using it for another country, follow the instructions in the **Customization** section.
 
-To use this script, do the following:
+## How to Use
 
-1. Log in to <https://ais.usvisa-info.com>
-2. Click on the "Continue" button to go to the actions page
-3. Open up Console on your browser
-4. Copy and paste this script into the console and press Enter to run the script
+1. Log in to [US Visa Appointment](https://ais.usvisa-info.com).
+2. Click on the "Continue" button to go to the actions page.
+3. Open the Console on your browser (usually F12 or right-click -> Inspect -> Console).
+4. Copy and paste the provided script into the console and press Enter to run it.
 
-The script will then run automatically every 60 seconds, checking for earlier appointment dates than the specified desired date. If an earlier date is found, the script will display an alert with the earliest available date.
+The script will run every 60 seconds, checking for earlier appointment dates than the specified desired date. If an earlier date is found, the script will display an alert with the earliest available date.
 
 ## Customization
 
+### Country and Visa Center Code
+
+To adapt this script for another country:
+
+1. Inspect the network calls in your browser while on the reschedule appointment page.
+2. Look for an XHR call similar to `19.json?appointments[expedite]=false`. Replace `19` with the appropriate visa center code for your country.
+3. Replace `en-et` in the URL `https://ais.usvisa-info.com/en-et/niv/schedule/` with your country's code (e.g., `en-us` for the USA).
+
 ### Desired Date
 
-You can customize the desired date by modifying the following line in the script:
+Modify the desired date by changing the following line in the script:
+
+```javascript
+const desiredDate = new Date('2024-04-30');
+```
+
+### Check Interval
+
+You can adjust how often the script checks for new appointments by modifying the interval in minutes:
+
+```javascript
+const scrapeInterval = setScrapeInterval(1); // Check every 1 minute
+```
+
+## Script
+
+Copy and paste the following script into the browser console:
 
 ```javascript
 'use strict';
@@ -89,3 +111,9 @@ const setScrapeInterval = (intervalInMinutes) => {
 // Example usage: Set the interval to check every 1 minute (can be adjusted)
 const scrapeInterval = setScrapeInterval(1);
 ```
+
+### Additional Notes
+
+- Ensure your browser supports desktop notifications.
+- You can replace `window.alert` with `notifyUser` for desktop notifications by uncommenting the relevant line in the script.
+- This script uses `fetch` for making network requests and `async/await` for asynchronous operations, ensuring modern and clean code practices.
