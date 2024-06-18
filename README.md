@@ -61,6 +61,8 @@ const getAppointmentId = () => {
 
 const appointmentId = getAppointmentId();
 
+const intervalInMinutes = 1;
+
 // Notify user with audio and desktop notification
 const notifyUser = async (message) => {
     await audio.play();
@@ -77,7 +79,6 @@ const notifyUser = async (message) => {
 };
 
 // Check for available appointments and notify user if an earlier date is found
-
 const checkAppointments = setInterval(function () {
     $.getJSON('https://ais.usvisa-info.com/en-et/niv/schedule/' + appointmentId + '/appointment/days/19.json?appointments[expedite]=false', function (data) {
         if (data.length === 0) { console.log('No appointments available'); }
@@ -93,16 +94,8 @@ const checkAppointments = setInterval(function () {
             }
         }
     });
-}, 60000);
+}, 60*1000*intervalInMinutes);
 
-// Set interval to check appointments every minute (adjustable)
-const setScrapeInterval = (intervalInMinutes) => {
-    const intervalInMilliseconds = intervalInMinutes * 60 * 1000;
-    return setInterval(checkAppointments, intervalInMilliseconds);
-};
-
-// Example usage: Set the interval to check every 1 minute (can be adjusted)
-const scrapeInterval = setScrapeInterval(1);
 ```
 
 ### Additional Notes
