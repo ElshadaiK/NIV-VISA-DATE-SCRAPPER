@@ -77,30 +77,25 @@ const notifyUser = async (message) => {
 };
 
 // Check for available appointments and notify user if an earlier date is found
-const checkAppointments = async () => {
-    const url = `https://ais.usvisa-info.com/en-et/niv/schedule/${appointmentId}/appointment/days/19.json?appointments[expedite]=false`;
-    
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        
+
+const checkAppointments = setInterval(function () {
+    $.getJSON('https://ais.usvisa-info.com/en-et/niv/schedule/' + id + '/appointment/days/19.json?appointments[expedite]=false', function (data) {
         if (data.length === 0) {
             console.log('No appointments available');
-            return;
         }
-
-        const earliestDate = new Date(data[0].date);
-        if (earliestDate <= desiredDate) {
-            alert(`Earliest date available: ${earliestDate.toDateString()}`);
-            // To use desktop notification instead of alert, comment out the line above and uncomment the line below
-            // notifyUser(`Earliest date available: ${earliestDate.toDateString()}`);
-        } else {
-            console.log('No earlier date available');
+        if (data.length > 0) {
+            var earliestDate = new Date(data[0].date);
+            if (earliestDate.getTime() <= desiredDate.getTime()) {
+                // window.alert('Earliest date available: ' + earliestDate.toDateString());
+                // if you're busy using another window and would like to be notified if an appointment is found, 
+                // comment the line above and uncomment the line below
+                notifyUser('Earliest date available: ' + earliestDate.toDateString());
+            } else {
+                console.log('No date available');
+            }
         }
-    } catch (error) {
-        console.error('Error fetching appointment data:', error);
-    }
-};
+    });
+}, 60000);
 
 // Set interval to check appointments every minute (adjustable)
 const setScrapeInterval = (intervalInMinutes) => {
